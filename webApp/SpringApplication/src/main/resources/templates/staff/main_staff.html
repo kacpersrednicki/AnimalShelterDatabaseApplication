@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Panel pracownika | Schronisko Przytulne Łapki - strona pracownicza</title>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+    <!-- Dodanie Google Fonts - Open Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+    <link href="../static/css/staff_styles.css" th:href="@{/css/staff_styles.css}" rel="stylesheet" />
+    <block sec:authorize="hasAuthority('ADMIN')">
+        <link href="../static/css/admin_styles.css" th:href="@{/css/admin_styles.css}" rel="stylesheet" />
+    </block>
+</head>
+<body>
+
+<!-- NAWIGACJA -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+        <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler"
+                data-target="#navbarResponsive"
+                data-toggle="collapse" id="sidebar-toggle" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="/main">
+            <img alt="Logo" class="logo" th:src="@{/images/logo_icon.png}"/>
+            <th:text sec:authorize="hasAuthority('USER')">
+                Schronisko Przytulne Łapki — panel pracownika
+            </th:text>
+            <th:text sec:authorize="hasAuthority('ADMIN')">
+                Schronisko Przytulne Łapki — panel administratora
+            </th:text>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/index}">Strona główna</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                       data-toggle="dropdown" href="#"
+                       id="userDropdown" role="button" style="color: lightskyblue;">
+                        Zalogowano jako: <b style="text-transform: capitalize;"
+                                            th:text="${#httpServletRequest.remoteUser}"></b>
+                    </a>
+                    <div aria-labelledby="userDropdown" class="dropdown-menu">
+                        <form method="post" th:action="@{/index}">
+                            <button class="dropdown-item" onclick="successfullyLogout()" type="submit" value="Sign Out">
+                                Wyloguj
+                            </button>
+                        </form>
+                        <a th:href="@{/changePassword}" class="dropdown-item">Zmień hasło</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <ul class="nav flex-column">
+        <li class="nav-item dropdown">
+            <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+               href="#" role="button">
+                Zwierzęta
+            </a>
+            <div aria-labelledby="submenuDropdown" class="dropdown-menu sidebar-dropdown">
+                <a class="dropdown-item" href="/search_panel">Wyszukaj</a>
+                <a class="dropdown-item" href="/addAnimal">Dodaj</a>
+                <a class="dropdown-item" href="#">Adopcje</a>
+            </div>
+        </li>
+
+        <!-- Opcje dla roli ADMIN -->
+        <block sec:authorize="hasAuthority('ADMIN')">
+            <li class="nav-item dropdown">
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                   href="#" role="button">
+                    Pracownicy
+                </a>
+                <div aria-labelledby="submenuDropdown" class="dropdown-menu sidebar-dropdown">
+                    <a class="dropdown-item" href="/addStaffMember">Dodaj pracownika</a>
+                    <a class="dropdown-item" href="/searchUsersPanel">Wyszukaj pracownika</a>
+                </div>
+            </li>
+        </block>
+    </ul>
+</div>
+<div class="content">
+    <div class="row">
+        <div class="col-md-10 mt-5">
+                <form method="post" th:action="@{/index}">
+                <div class="form-group">
+                    <label th:inline="text">Witaj <a style="color:lightskyblue; text-transform:capitalize"><b>[[${#httpServletRequest.remoteUser}]]</b></a>!</label>
+                    <div>Aby się wylogować naciśnij przycisk poniżej lub użyj panelu w prawym górnym rogu</div>
+                </div>
+
+                <button class="btn btn-primary" type="submit" onclick="successfullyLogout()" value="Sign Out">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/css/js/js/script.js}"></script>
+
+</body>
+</html>
